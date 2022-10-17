@@ -35,33 +35,27 @@ int validaCores(char cor1[], char cor2[]){
     return 1;
 }
 
-void torreCilindros(cilindros *A, int i, int n, int *memo){
-    if (i == 0){
+void torreCilindros(cilindros *A, int i, int n, int *memo){// memo = {1, }
+    if (i == 0){                                           // max = 1
         memo[i] = A[i].h;
     }
     else if (i > 0 && i < n){
-        if (A[i].r > A[i-1].r){
-            int j = 1;
-            while ((j<=i) && !validaCores(A[i].cor, A[i-j].cor)){
-                j++;
+            int j = -1;
+            int max = memo[0];
+            for (int x = i-1; x>=0; x--){
+                if (memo[x] > max && validaCores(A[i].cor, A[x].cor) && (A[i].r > A[x].r)){
+                    j = x;
+                    max = memo[x];
+                }
             }
-            if (j>i)
+            if (j==i || j < 0)
                 memo[i] = A[i].h;
             else
-                memo[i] = A[i].h + memo[i-j];
-        }
-        else{
-            int j = 2;
-            while ((j<=i) || (!(A[i].r > A[i-j].r) && !validaCores(A[i].cor, A[i-j].cor)))
-                j++;
-            if (j>i)
-                memo[i] = A[i].h;
-            else
-                memo[i] = A[i].h + memo[i-j];
-        }
+                memo[i] = A[i].h + memo[j];
     }
     else
         return;
+    printf("%d ", memo[i]);
     torreCilindros(A, i+1, n, memo);
 }
 
